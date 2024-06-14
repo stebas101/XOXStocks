@@ -1,0 +1,17 @@
+{% extends 'layout.html' %}
+
+{% from "_formhelpers.html" import render_field %}
+{% block content %}
+  <h1 class="text-center">{% block title %}Register{% endblock %}</h1>
+  <form class="row g-3" action="" method="post" novalidate>
+    <div class="col-md-4"></div>
+    <div class="col-md-4">
+      {{ form.hidden_tag() }}
+      {{ render_field(form.username) }}
+      {{ render_field(form.password) }}
+      {{ render_field(form.repeat) }}
+    <button type="submit" class="btn btn-primary">Register</button>
+    </div>
+    <div class="col-md-4"></div>
+  </form>
+{% endblock %}

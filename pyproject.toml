@@ -1,0 +1,14 @@
+[project]
+name = "xoxstocks"
+version = "2024-06"
+description = "A stock screener built in Flask"
+dependencies = [
+    "flask",
+    "Flask-WTF",
+    "flask-sqlalchemy",
+     "python-dotenv",
+]
+
+[build-system]
+requires = ["flit_core<4"]
+build-backend = "flit_core.buildapi"

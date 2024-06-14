@@ -1,0 +1,23 @@
+{% extends 'layout.html' %}
+
+{% block title %}Home{% endblock %}
+
+{%block authmenu %}
+    {% if g.user%}
+        <a class="nav-link" href="">{{ g.user.username }}</a>
+        <a class="nav-link" href={{ url_for('auth.logout') }}>Logout</a>
+    {% else %}
+        <a class="nav-link" href={{ url_for('auth.login') }}>Login</a>
+        <a class="nav-link" href={{ url_for('auth.register') }}>Register</a>
+    {% endif %}
+
+    
+{% endblock%}
+
+{% block content %}
+
+<div class="container">
+    Hello!
+</div>
+{% endblock %}
+

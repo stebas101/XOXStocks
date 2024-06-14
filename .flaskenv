@@ -1,0 +1,2 @@
+FLASK_APP=xoxstocks
+FLASK_DEBUG=1

@@ -1,0 +1,42 @@
+{% extends 'layout.html' %}
+
+{%block authmenu %}
+    {% if g.user%}
+        <a class="nav-link" href="">{{ g.user.username }}</a>
+        <a class="nav-link" href={{ url_for('auth.logout') }}>Logout</a>
+    {% else %}
+        <a class="nav-link" href={{ url_for('auth.login') }}>Login</a>
+        <a class="nav-link" href={{ url_for('auth.register') }}>Register</a>
+    {% endif %}
+{% endblock%}
+
+{% block content %}
+
+<div class="container">
+    <h1 class="text-center">{% block title %}My Watchlists{% endblock %}</h1>
+
+    <input autocomplete="off" autofocus placeholder="Symbol or name" type="text">
+    <button value="click me">click me</button>
+    <p>hello!</p>
+    <ul></ul>
+
+</div>
+
+<script> 
+    let input = document.querySelector('input');
+    let element = document.querySelector('ul');
+    let destination = document.querySelector('p');
+
+    input.addEventListener('input',
+        () => destination.innerHTML = input.value
+        );
+    document.querySelector('button').addEventListener('click',
+        () => {
+            let text = element.innerHTML;
+            text = text + '<li>' + input.value.replace('<', '&lt;').replace('&', '&amp;') + '</li>';
+            element.innerHTML = text;
+        })
+</script>
+
+
+{% endblock %}
