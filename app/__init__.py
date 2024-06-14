@@ -1,23 +1,24 @@
-import os
+import os, click
 
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
+# from fill_data import fill_data
 
 db = SQLAlchemy()
 
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
+    # TODO implement a config design
     app.config.from_mapping(
         SECRET_KEY='dev',
-        # DATABASE=os.path.join(app.instance_path, 'xoxstocks.sqlite'),
     )
     # sqlite:///path/to/database.db
     # postgresql://username:password@host:port/database_name
     # mysql://username:password@host:port/database_name
     app.config['SQLALCHEMY_DATABASE_URI'] =\
-        'sqlite:///' + os.path.join(app.instance_path, 'xoxstocks.db')
+        'sqlite:///' + os.path.join(app.instance_path, 'database.db')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.init_app(app)
     
@@ -47,8 +48,19 @@ def create_app(test_config=None):
     # from . import db
     # db.init_app(app)
     
+    @app.cli.command("init-db")
+    def init_db_command():
+        """Clear the existing data and create new tables."""
+        db.drop_all()
+        db.create_all()
+        click.echo('Initialized the database.')
+        
+    @app.cli.command("fill-data")
+    def fill_data_command():
+        from app.fill_data import fill_data
+        fill_data()
+        click.echo('Data filled into database.')
+    
     return app
 
 from . import models
-
-

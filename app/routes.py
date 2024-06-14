@@ -3,7 +3,7 @@ from flask import (
     url_for
 )
 
-from xoxstocks.auth import login_required
+from app.auth import login_required
 
 
 bp = Blueprint('/', __name__, url_prefix='/')
