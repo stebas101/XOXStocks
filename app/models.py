@@ -11,7 +11,6 @@ class User(db.Model):
     username = db.Column(db.String[64], unique=True, nullable=False)
     password = db.Column(db.String[256], nullable=False)
     # email = db.Column(db.String(80), unique=True, nullable=False)
-    bio = db.Column(db.Text)
 
     def __repr__(self):
         return f'<User {self.username}>'
@@ -27,8 +26,8 @@ class Symbol(db.Model):
     
 class Watchlist(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer) # TODO foreign key
-    symbol_list = db.Column(db.Text)
+    user_id = db.Column(db.Integer, nullable=False) # TODO foreign key
+    symbol_list = db.Column(db.Text, nullable=False)
 
     def __repr__(self):
         return f'<Watchlist {self.name}: user {self.user_id}>'
@@ -36,7 +35,7 @@ class Watchlist(db.Model):
 class DefaultList(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String[128], nullable=False)
-    symbol_list = db.Column(db.Text)
+    symbol_list = db.Column(db.Text, nullable=False)
     
     def __repr__(self):
         return f'<DefaultList {self.name}>'

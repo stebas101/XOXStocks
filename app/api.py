@@ -1,21 +1,20 @@
 from flask import Blueprint, g, request, jsonify
 
 from app import db
+from app.models import Symbol
 
 
 bp = Blueprint('api', __name__, url_prefix='/api')
 
 @bp.route('/symbols')
 def symbols():
-    # db = get_db()
+    table = []
     try:
-        # result = db.execute(
-        #         'SELECT * FROM asset;'
-        #     ).fetchall()
-        # for row in result:
-        #     print(row['symbol'], row['short_name'])
-        #     print(dict(result))
-        return jsonify(dict(result))
+        symbols = Symbol.query.all()
+        for s in symbols:
+            table.append((s.symbol, s.short_name))
+        print(table)
+        return jsonify(table)
     except:
-        return 'error'
+        return 'database error' # TODO return proper error page
 
