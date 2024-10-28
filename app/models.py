@@ -7,19 +7,22 @@ from app import db
 
 
 class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String[64], unique=True, nullable=False)
-    password = db.Column(db.String[256], nullable=False)
-    # email = db.Column(db.String(80), unique=True, nullable=False)
+    id: so.Mapped[int] = so.mapped_column(primary_key=True)
+    username: so.Mapped[str] = so.mapped_column(sa.String(64), index=True,
+                                                unique=True)
+    email: so.Mapped[str] = so.mapped_column(sa.String(120), index=True,
+                                             unique=True)
+    password: so.Mapped[Optional[str]] = so.mapped_column(sa.String(256))
 
     def __repr__(self):
         return f'<User {self.username}>'
     
 class Symbol(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    symbol = db.Column(db.String[32], unique=True, nullable=False, index=True)
-    venue = db.Column(db.String[32], nullable=True)
-    short_name = db.Column(db.String[128])
+    id: so.Mapped[int] = so.mapped_column(primary_key=True)
+    symbol: so.Mapped[str] = so.mapped_column(sa.String(32), index=True,
+                                                unique=True)
+    venue: so.Mapped[str] = so.mapped_column(sa.String(32))
+    short_name = so.mapped_column(sa.String(64))
     
     def __repr__(self):
         return f'<Symbol {self.symbol}@{self.venue}: {self.short_name}>'

@@ -1,25 +1,32 @@
-import os, click
+import os
 
-from flask import Flask
+from flask import Flask, request, current_app
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
+
+from config import Config
 
 
 db = SQLAlchemy()
+migrate = Migrate()
 
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
     # TODO implement a config design
-    app.config.from_mapping(
-        SECRET_KEY='dev',
-    )
+    app.config.from_object(config_class)
+    # app.config.from_mapping(
+    #     SECRET_KEY='dev',
+    # )
     # sqlite:///path/to/database.db
     # postgresql://username:password@host:port/database_name
     # mysql://username:password@host:port/database_name
-    app.config['SQLALCHEMY_DATABASE_URI'] =\
-        'sqlite:///' + os.path.join(app.instance_path, 'database.db')
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    # app.config['SQLALCHEMY_DATABASE_URI'] =\
+    #     'sqlite:///' + os.path.join(app.instance_path, 'database.db')
+    # app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    
     db.init_app(app)
+    migrate.init_app(app, db)
     
     if test_config is None:
         # load the instance config, if it exists, when not testing
@@ -44,18 +51,18 @@ def create_app(test_config=None):
     from . import api
     app.register_blueprint(api.bp)
     
-    @app.cli.command("init-db")
-    def init_db_command():
-        """Clear the existing data and create new tables."""
-        db.drop_all()
-        db.create_all()
-        click.echo('Initialized the database.')
+    # @app.cli.command("init-db")
+    # def init_db_command():
+    #     """Clear the existing data and create new tables."""
+    #     db.drop_all()
+    #     db.create_all()
+    #     click.echo('Initialized the database.')
         
-    @app.cli.command("fill-data")
-    def fill_data_command():
-        from app.fill_data import fill_data
-        fill_data()
-        click.echo('Data filled into database.')
+    # @app.cli.command("fill-data")
+    # def fill_data_command():
+    #     from app.fill_data import fill_data
+    #     fill_data()
+    #     click.echo('Data filled into database.')
     
     return app
 
