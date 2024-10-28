@@ -1,6 +1,9 @@
 # XOXStocks
 ## A Stock and ETF screener based on Flask
 #### Video Demo:  <URL HERE>
+#### Description:
+
+__Note: project still in progress__
 
 __XOXStocks__ is a self-contained Stock and ETF screener web application based on Flask. I developed it as a final project for the [CS50's _Introduction to Computer Science_](https://cs50.harvard.edu/x/2024) course.
 
@@ -33,6 +36,8 @@ TODO
 - styled using Bootstrap
 
 - tests
+
+- race conditions
 
 #### File structure
 
@@ -75,14 +80,12 @@ TODO
 
 ### Sources
 
-TODO
+[1][The tutorial](https://flask.palletsprojects.com/en/3.0.x/tutorial/) in the Flask official documentation.
 
-[digital ocean blog](https://www.digitalocean.com/community/tutorials/how-to-use-flask-sqlalchemy-to-interact-with-databases-in-a-flask-application)
+[2][Flask-SQLAlchemy Tutorial](https://flask-sqlalchemy.palletsprojects.com/en/3.0.x/quickstart/)
 
-Miguel Grinberg's [Flask _mega tutorial_](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-iv-database)
+[3][Flask _mega tutorial_](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-iv-database) by Miguel Grinberg
 
-Flask tutorial
+[4][Digital Ocean blog: How to use Flask-SQLAlchemy to interact with databases in a Flask application](https://www.digitalocean.com/community/tutorials/how-to-use-flask-sqlalchemy-to-interact-with-databases-in-a-flask-application)
 
-https://flask-sqlalchemy.palletsprojects.com/en/3.0.x/quickstart/
-
-https://www.digitalocean.com/community/tutorials/how-to-query-tables-and-paginate-data-in-flask-sqlalchemy
+[5][Digital Ocean blog: how to query tables and paginate data in Flask-SQLAlchemy](https://www.digitalocean.com/community/tutorials/how-to-query-tables-and-paginate-data-in-flask-sqlalchemy)

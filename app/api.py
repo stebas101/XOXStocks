@@ -17,4 +17,3 @@ def symbols():
         return jsonify(table)
     except:
         return 'database error' # TODO return proper error page
-

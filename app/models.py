@@ -3,7 +3,7 @@ from typing import Optional
 import sqlalchemy as sa
 import sqlalchemy.orm as so
 
-from . import db
+from app import db
 
 
 class User(db.Model):
@@ -27,6 +27,7 @@ class Symbol(db.Model):
 class Watchlist(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, nullable=False) # TODO foreign key
+    name = db.Column(db.Text, nullable=False)
     symbol_list = db.Column(db.Text, nullable=False)
 
     def __repr__(self):
