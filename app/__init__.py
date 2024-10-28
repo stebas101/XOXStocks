@@ -10,20 +10,11 @@ from config import Config
 db = SQLAlchemy()
 migrate = Migrate()
 
-def create_app(test_config=None):
+def create_app(config_class=Config):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
-    # TODO implement a config design
     app.config.from_object(config_class)
-    # app.config.from_mapping(
-    #     SECRET_KEY='dev',
-    # )
-    # sqlite:///path/to/database.db
-    # postgresql://username:password@host:port/database_name
-    # mysql://username:password@host:port/database_name
-    # app.config['SQLALCHEMY_DATABASE_URI'] =\
-    #     'sqlite:///' + os.path.join(app.instance_path, 'database.db')
-    # app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
     
     db.init_app(app)
     migrate.init_app(app, db)

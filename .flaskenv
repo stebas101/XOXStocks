@@ -1,2 +1,2 @@
-FLASK_APP=app
+FLASK_APP=xoxstocks.py
 FLASK_DEBUG=1
