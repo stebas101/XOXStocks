@@ -31,13 +31,15 @@ TODO
 
 - use of SQLAlchemy: ORM approach, replacing sqlite with MySQL or PostgreSQL
 
+- use of database migrations
+
 - AJAX
 
 - styled using Bootstrap
 
-- tests
+- tests - unittest
 
-- race conditions
+- race conditions ?
 
 #### File structure
 
@@ -46,39 +48,49 @@ TODO
 ```
 .
 ├── README.md
+├── app
+│   ├── __init__.py
+│   ├── api.py
+│   ├── auth.py
+│   ├── fill_data.py
+│   ├── forms.py
+│   ├── models.py
+│   ├── routes.py
+│   ├── static
+│   │   └── style.css
+│   └── templates
+│       ├── _formhelpers.html
+│       ├── auth
+│       │   ├── login.html
+│       │   └── register.html
+│       ├── index.html
+│       ├── layout.html
+│       └── watchlist.html
+├── config.py
 ├── instance
-│   └── xoxstocks.sqlite
-├── populate.py
+│   ├── data
+│   │   └── symbols.csv
+│   └── database.db
+├── migrations
+│   ├── README
+│   ├── alembic.ini
+│   ├── env.py
+│   ├── script.py.mako
+│   └── versions
+│       └── 4f52b126910e_users_table.py
 ├── pyproject.toml
 ├── tests
-└── xoxstocks
-    ├── __init__.py
-    ├── api.py
-    ├── auth.py
-    ├── data
-    │   └── symbols.csv
-    ├── db.py
-    ├── forms.py
-    ├── models.py
-    ├── routes.py
-    ├── schema.sql
-    ├── static
-    │   └── style.css
-    └── templates
-        ├── _formhelpers.html
-        ├── auth
-        │   ├── login.html
-        │   └── register.html
-        ├── index.html
-        ├── layout.html
-        └── watchlist.html
+├── tests.py
+└── xoxstocks.py
 ```
 
 #### Nice to add
 
-- Database migrations
+- Email confirmation upon registration
+- Email token to reset password
+- race conditions to help use with several concurrent users
 
-### Sources
+### Sources and References
 
 [1][The tutorial](https://flask.palletsprojects.com/en/3.0.x/tutorial/) in the Flask official documentation.
 

@@ -2,22 +2,23 @@
 
 {% block title %}Home{% endblock %}
 
-{%block authmenu %}
-    {% if g.user%}
-        <a class="nav-link" href="">{{ g.user.username }}</a>
-        <a class="nav-link" href={{ url_for('auth.logout') }}>Logout</a>
-    {% else %}
+{% block authmenu %}
+    {% if current_user.is_anonymous %}
         <a class="nav-link" href={{ url_for('auth.login') }}>Login</a>
         <a class="nav-link" href={{ url_for('auth.register') }}>Register</a>
+    {% else %}
+        <a class="nav-link" href="">{{ g.user.username }}</a>
+        <a class="nav-link" href={{ url_for('auth.logout') }}>Logout</a>
     {% endif %}
-
-    
 {% endblock%}
 
 {% block content %}
-
 <div class="container">
-    Hello!
+    <h1>Welcome</h1>
+    <ul>
+        <li>Manage your Watchlists</li>
+        <li>Screener</li>
+    </ul>
 </div>
 {% endblock %}
 

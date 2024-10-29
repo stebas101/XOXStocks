@@ -1,12 +1,13 @@
 [project]
 name = "xoxstocks"
-version = "2024-11"
+version = "2024-10"
 description = "A stock screener web app built using Flask"
 dependencies = [
     "flask",
     "Flask-WTF",
     "flask-sqlalchemy",
     "flask-migrate",
+    "flask-login",
     "python-dotenv",
 ]
 

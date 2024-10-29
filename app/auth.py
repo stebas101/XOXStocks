@@ -3,9 +3,13 @@ import functools
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for
 )
+from urllib.parse import urlsplit
+from flask_login import current_user, login_user, logout_user
+import sqlalchemy as sa
 from werkzeug.security import check_password_hash, generate_password_hash
 
 # from xoxstocks.db import get_db
+
 from app import db
 from app.forms import RegisterForm, LoginForm
 from app.models import User
@@ -38,27 +42,25 @@ def register():
 
 @bp.route('/login', methods=('GET', 'POST'))
 def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    
     form = LoginForm(request.form)
     if form.validate_on_submit():
         username = form.data['username']
         password = form.data['password']
-        error = None
-        user = User.query.filter(User.username == username).first()
-        
-        if user is None:
-            error = 'Incorrect username.'
-        elif not check_password_hash(user.password, password):
-            error = 'Incorrect password.'
-
-        if error is None:
-            session.clear()
-            session['user_id'] = user.id
-            flash("You've logged in successfully.")
-            return redirect(url_for('index'))
-
-        flash(error)
-
-    return render_template('auth/login.html', form=form)
+        user = db.session.scalar(
+            sa.select(User).where(User.username == username))
+        if user is None or not user.check_password(password):
+            flash('Invalid username or password')
+            return redirect(url_for('auth.login'))
+        login_user(user) # TODO add remember_me option
+        # next_page = request.args.get('next')
+        # if not next_page or urlsplit(next_page).netloc != '':
+        #     next_page = url_for('main.index')
+        # return redirect(next_page)
+    
+    return render_template('auth/login.html', title='Sign In', form=form)
 
 
 @bp.before_app_request
