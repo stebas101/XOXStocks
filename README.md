@@ -23,9 +23,14 @@ TODO
 
 TODO
 
+Set `FLASK_DEBUG=0` in `.flaskenv`
+Environment variables in `.env` or elsewhere
+
 #### Design and Components
 
 TODO
+
+- web app based on Flask
 
 - use of WTForms and FlaskWTForms allows to streamline the form validation and to implement CSRF key encription on form data
 
@@ -38,8 +43,6 @@ TODO
 - styled using Bootstrap
 
 - tests - unittest
-
-- race conditions ?
 
 #### File structure
 
@@ -84,11 +87,14 @@ TODO
 └── xoxstocks.py
 ```
 
-#### Nice to add
+#### Desireable future additions
 
 - Email confirmation upon registration
 - Email token to reset password
 - race conditions to help use with several concurrent users
+- price data storage
+- retrieving data from different sources
+- multiple language support using Babel
 
 ### Sources and References
 

@@ -11,7 +11,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from app import db, login
 
 
-class User(db.Model):
+class User(UserMixin, db.Model):
     id: so.Mapped[int] = so.mapped_column(primary_key=True)
     username: so.Mapped[str] = so.mapped_column(sa.String(64), index=True,
                                                 unique=True)
@@ -31,6 +31,10 @@ class User(db.Model):
         return check_password_hash(self.password, password)
     
     def get_reset_password_token(self, expires_in=600):
+        pass
+    
+    @staticmethod
+    def verify_reset_password_token(token):
         pass
     
     def set_watchlist(self):

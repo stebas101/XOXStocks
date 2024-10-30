@@ -9,3 +9,7 @@
         {% endfor %}
     </div>
 {% endmacro %}
+
+{% macro render_button(btn) %}
+    {{ btn(class='btn btn-primary mb-3') }}
+{% endmacro %}
