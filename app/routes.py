@@ -30,3 +30,9 @@ def before_request():
     if current_user.is_authenticated:
         current_user.last_seen = datetime.now(timezone.utc)
         db.session.commit()
+
+@bp.route('/user')
+@login_required
+def user():
+    user = current_user
+    return render_template('user.html', user=user)

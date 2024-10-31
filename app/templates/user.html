@@ -1,0 +1,17 @@
+{% extends 'layout.html' %}
+
+
+{% block content %}
+<h1 class="text-center">{% block title %}User{% endblock %}</h1>
+
+<div class="row g-3">
+    <div class="col-md-4"></div>
+    <div class="col-md-4">
+        <p>User: {{ user.username }}</p>
+        <p>Email: {{ user.email }}</p>
+        <p>Last seen: {{ user.last_seen }}</p>
+        <p><a href={{ url_for('auth.logout') }}>Logout</a></p>
+    </div>
+    <div class="col-md-4"></div>
+</div>
+{% endblock %}
