@@ -16,6 +16,7 @@ class Config:
     # postgresql://username:password@host:port/database_name
     # mysql://username:password@host:port/database_name
     # SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SYMBOL_DATA_PATH = os.environ.get('SYMBOL_DATA_PATH') or 'data'
         
 
 if __name__ == '__main__':

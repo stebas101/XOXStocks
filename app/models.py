@@ -12,6 +12,8 @@ from app import db, login
 
 
 class User(UserMixin, db.Model):
+    __tablename__ = 'users'
+    
     id: so.Mapped[int] = so.mapped_column(primary_key=True)
     username: so.Mapped[str] = so.mapped_column(sa.String(64), index=True,
                                                 unique=True)
@@ -46,15 +48,17 @@ def load_user(id):
     return db.session.get(User, int(id))
 
 
-# class Symbol(db.Model):
-#     id: so.Mapped[int] = so.mapped_column(primary_key=True)
-#     symbol: so.Mapped[str] = so.mapped_column(sa.String(32), index=True,
-#                                                 unique=True)
-#     venue: so.Mapped[str] = so.mapped_column(sa.String(32))
-#     short_name: so.Mapped[str] = so.mapped_column(sa.String(64))
+class Symbol(db.Model):
+    __tablename__ = 'symbols'
     
-#     def __repr__(self):
-#         return f'<Symbol {self.symbol}@{self.venue}: {self.short_name}>'
+    id: so.Mapped[int] = so.mapped_column(primary_key=True)
+    symbol: so.Mapped[str] = so.mapped_column(sa.String(16),
+                                            index=True,
+                                            unique=True)
+    name: so.Mapped[str] = so.mapped_column(sa.String(64))
+    
+    def __repr__(self):
+        return f'<Symbol {self.symbol}: {self.name}>'
 
 
 # class Watchlist(db.Model):
