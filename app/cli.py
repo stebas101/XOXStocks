@@ -40,16 +40,13 @@ def load(symb_file):
                 print('Adding: ', symb)
                 added += 1
             else:
-                # TODO update function in models
-                symb_db.name = symb.name
-                print('Updating: ', symb)
+                symb_db.update(symb)
+                print('Updating: ', symb_db)
                 updated += 1
             
         db.session.commit()
         print(f'{added} symbols added.\n{updated} symbols updated.')
-            
-            
-    
+        
 
 @symb.command()
 def list():

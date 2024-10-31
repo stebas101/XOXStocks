@@ -59,6 +59,9 @@ class Symbol(db.Model):
     
     def __repr__(self):
         return f'<Symbol {self.symbol}: {self.name}>'
+    
+    def update(self, symb_new):
+        self.name = symb_new.name
 
 
 # class Watchlist(db.Model):
