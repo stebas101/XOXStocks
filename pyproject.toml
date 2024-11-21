@@ -1,17 +1,19 @@
 [project]
+requires-python = ">=3.12.3"
 name = "xoxstocks"
-version = "2024-10"
+version = "2024.10"
 description = "A stock screener web app built using Flask"
 dependencies = [
+    "email-validator",
     "flask",
+    "flask-login",
+    "flask-migrate",
     "Flask-WTF",
     "flask-sqlalchemy",
-    "flask-migrate",
-    "flask-login",
     "python-dotenv",
-    "email-validator",
-]
+    "yfinance",
+    ]
 
 [build-system]
-requires = ["flit_core<4"]
-build-backend = "flit_core.buildapi"
+requires = ["setuptools >= 61.0"]
+build-backend = "setuptools.build_meta"

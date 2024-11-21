@@ -67,4 +67,4 @@ def check_file(symb_file):
     # DictReader.dialect == 'excel'
     # DictReader.line_num > 1
     # no None values
-    pass
+    raise NotImplementedError
