@@ -22,6 +22,9 @@ class User(UserMixin, db.Model):
     password: so.Mapped[Optional[str]] = so.mapped_column(sa.String(256))
     last_seen: so.Mapped[Optional[datetime]] = so.mapped_column(
         default=lambda: datetime.now(timezone.utc))
+    
+    # watchlists: so.WriteOnlyMapped['Watchlist'] = so.relationship(
+    #     back_populates='user')
 
     def __repr__(self):
         return f'<User {self.username}>'
@@ -64,14 +67,17 @@ class Symbol(db.Model):
         self.name = symb_new.name
 
 
-# class Watchlist(db.Model):
-#     id = db.Column(db.Integer, primary_key=True)
-#     user_id = db.Column(db.Integer, nullable=False) # TODO foreign key
-#     name = db.Column(db.Text, nullable=False)
-#     symbol_list = db.Column(db.Text, nullable=False)
+class Watchlist(db.Model):
+    __tablename__ = 'watchlists'
+    
+    id: so.Mapped[int] = so.mapped_column(primary_key=True)
+    list_name: so.Mapped[str] = so.mapped_column(sa.String(64))
+    symbol_list: so.Mapped[str] = so.mapped_column(sa.Text())
+    user_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey(User.id),
+                                               index=True)
 
-#     def __repr__(self):
-#         return f'<Watchlist {self.name}: user {self.user_id}>'
+    def __repr__(self):
+        return f'<Watchlist {self.list_name}: user {self.user_id}>'
 
 
 # class DefaultList(db.Model):

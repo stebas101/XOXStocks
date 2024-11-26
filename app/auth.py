@@ -12,7 +12,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from app import db
 from app.forms import RegisterForm, LoginForm
-from app.models import User
+from app.models import User, Watchlist
 
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
@@ -24,6 +24,7 @@ def register():
         return redirect(url_for('index'))
     form = RegisterForm()
     if form.validate_on_submit():
+        # adding user
         username_in = form.data['username']
         password_in = form.data['password']
         email_in = form.data['email']
@@ -32,7 +33,19 @@ def register():
         user.set_password(password_in)
         db.session.add(user)
         db.session.commit()
+        
+        # adding default watchlist
+        user_data = db.session.scalar(
+            sa.select(User).where(User.username == username_in)
+        )
+        watchlist = Watchlist(
+            list_name= "My Watchlist",
+            symbol_list = '',
+            user_id = user_data.id)
+        db.session.add(watchlist)
+        db.session.commit()
         flash('Thank you for registering!')
+        
         return redirect(url_for('auth.login'))
 
     return render_template('auth/register.html',

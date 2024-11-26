@@ -10,16 +10,63 @@
     <p></p>
     <ul></ul>
 
-    <div class="col-md-4"></div>
-    <div class="col-md-4">
-        <ul>
-            <li>My watchlists</li>
-            <li>Indexes</li>
-            <li>All Symbols</li>
-        </ul>
+    <div class="row">
+        <div class="col-md-2"></div>
+        <div class="col-md-8">
+            <div class="btn-group">
+                <a href="{{ url_for('/.watchlist')}}?list=wl" class="btn btn-outline-primary {% if list_type=='wl' %}active{% endif %}" aria-current="page">My Watchlists</a>
+                <a href="{{ url_for('/.watchlist')}}?list=idx" class="btn btn-outline-primary {% if list_type=='idx' %}active{% endif %}">Indices</a>
+                <a href="{{ url_for('/.watchlist')}}?list=all" class="btn btn-outline-primary {% if list_type=='all' %}active{% endif %}">All Symbols</a>
+            </div>
+            {% if list_type=='wl' or list_type=='idx' %}
+            <div class="dropdown">
+                <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Select Watchlist
+                </button>
+                <ul class="dropdown-menu">
+                {% if list_type=='wl' %}
+                    {% for watchlist in watchlist_ids %}
+                        <li><a class="dropdown-item  {% if watchlist.id==watchlist_id %}active{% endif %}" href="{{ url_for('/.watchlist')}}?list=wl&wl_id={{ watchlist.id }}">{{ watchlist.list_name }}</a></li>
+                    {% endfor %}
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="#">Create a new watchlist</a></li>
+                {% elif list_type=='idx' %}
+                <li>indices</li>
+                {% endif %}
+                </ul>
+            </div>
+            {% endif %}
+        </div>
+        <div class="col-md-2"></div>
     </div>
-    <div class="col-md-4"></div>
-
+    <div class="row">
+        {% if list_type=='wl' %}
+        <p>My watchlists</p>
+        {% elif list_type=='idx' %}
+        <p>Indices</p>
+        {% elif list_type=='all' %}
+        <p>All symbols</p>
+        {% endif %}
+        {% if watchlist_id %}
+        <p>Current Watchlist: {{ list_data['list_name'] }}</p>
+        <table class="table table-hover">
+            <thead class="table-primary">
+            <tr>
+                <th>Symbol</th>
+                <th>Name</th>
+            </tr>
+            </thead>
+            <tbody class="table-group-divider">
+            {% for item in list_data['list'] %}
+            <tr>
+                <td>{{ item.symbol }}</td>
+                <td>{{ item.name }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+    </div>
 </div>
 
 <script> 

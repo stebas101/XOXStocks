@@ -4,14 +4,15 @@ os.environ['DATABASE_URL'] = 'sqlite://' # TODO is this necessary?
 from datetime import datetime, timezone, timedelta
 import unittest
 
-# from flask import current_app
 from app import create_app, db
 from app.models import User
 from config import Config
 
+
 class TestConfig(Config):
     TESTING = True
     SQLALCHEMY_DATABASE_URI = 'sqlite://' # using a memory only database
+
 
 class UserModelCase(unittest.TestCase):
     def setUp(self):
@@ -38,6 +39,7 @@ class UserModelCase(unittest.TestCase):
         
         db.session.commit()
         pass
-                
+
+          
 if __name__ == '__main__':
     unittest.main(verbosity=2)

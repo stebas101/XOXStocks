@@ -8,5 +8,5 @@ app = create_app()
 
 @app.shell_context_processor
 def make_shell_context():
-    # add classes to tuse in the flask shell:
+    # add classes to use in the flask shell:
     return {'sa': sa, 'so': so, 'db': db, 'User': User, 'Symbol':Symbol} 
