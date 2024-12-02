@@ -14,16 +14,21 @@ dependencies = [
     "yfinance",
     ]
 
-[build-system]
-requires = ["setuptools >= 61.0"]
-build-backend = "setuptools.build_meta"
+[project.optional-dependencies]
+dev = [
+    "pytest",
+]
 
 [tool.pytest.ini_options]
 minversion = "8.0"
-addopts = "-rA"
+addopts = "-rA -q"
 pythonpath = [
     "."
 ]
 testpaths = [
     "tests",
 ]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

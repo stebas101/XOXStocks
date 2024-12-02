@@ -2,7 +2,7 @@ import pytest
 import os
 
 from app import create_app, db
-from app.models import User
+from app.models import User, Watchlist, Symbol
 from config import Config
 
 
@@ -28,7 +28,7 @@ def flask_context():
     app_context.pop()
 
 
-def test_password_hashing(flask_context):
+def test_password_hashing():
     u = User(username='stefano', email='stefano@exampletesting.info')
     u.set_password('youllneverguessme')
     assert u.check_password('foobar') == False
@@ -39,7 +39,15 @@ def test_user(flask_context):
     u2 = User(username='susan', email='susan@example.com')
     db.session.add_all([u1, u2])
     db.session.commit()
-    pass
+
+def test_watchlists(flask_context):
+    list1 = Watchlist(list_name='My List', symbol_list='AAPL,NVDA,TSLA', user_id='5')
+    db.session.add(list1)
+    db.session.commit()
 
 def test_load_symbols(flask_context):
     pass
+
+def test_update_symbols(flask_context):
+    pass
+
