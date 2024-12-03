@@ -4,6 +4,7 @@ import os
 from app import create_app, db
 from app.models import User, Watchlist, Symbol
 from config import Config
+from findata import get_stock_info
 
 
 class TestConfig(Config):
@@ -50,4 +51,7 @@ def test_load_symbols(flask_context):
 
 def test_update_symbols(flask_context):
     pass
+
+def test_get_stock_info():
+    get_stock_info('MSFT')
 

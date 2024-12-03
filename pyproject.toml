@@ -11,7 +11,7 @@ dependencies = [
     "Flask-WTF",
     "flask-sqlalchemy",
     "python-dotenv",
-    "yfinance",
+    "yfinance[nospam]",
     ]
 
 [project.optional-dependencies]

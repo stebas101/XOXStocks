@@ -25,3 +25,5 @@ class Config:
     # mysql://username:password@host:port/database_name
     # SQLALCHEMY_TRACK_MODIFICATIONS = False
     SYMBOL_DATA_PATH = os.environ.get('SYMBOL_DATA_PATH') or 'data'
+    
+    POSTS_PER_PAGE = 20

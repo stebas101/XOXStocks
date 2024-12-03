@@ -14,11 +14,12 @@
         <div class="col-md-2"></div>
         <div class="col-md-8">
             <div class="btn-group">
-                <a href="{{ url_for('/.watchlist')}}?list=wl" class="btn btn-outline-primary {% if list_type=='wl' %}active{% endif %}" aria-current="page">My Watchlists</a>
-                <a href="{{ url_for('/.watchlist')}}?list=idx" class="btn btn-outline-primary {% if list_type=='idx' %}active{% endif %}">Indices</a>
-                <a href="{{ url_for('/.watchlist')}}?list=all" class="btn btn-outline-primary {% if list_type=='all' %}active{% endif %}">All Symbols</a>
+                <a href="{{ url_for('/.watchlist')}}?list=wl" class="btn btn-outline-primary {% if list_type=='wl' %}active aria-current="page"{% endif %}">My Watchlists</a>
+                <a href="{{ url_for('/.watchlist')}}?list=idx" class="btn btn-outline-primary {% if list_type=='idx' %}active aria-current="page"{% endif %}">Indices</a>
+                <a href="{{ url_for('/.watchlist')}}?list=all" class="btn btn-outline-primary {% if list_type=='all' %}active aria-current="page"{% endif %}">All Symbols</a>
             </div>
             {% if list_type=='wl' or list_type=='idx' %}
+            <p></p>
             <div class="dropdown">
                 <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                 Select Watchlist
@@ -41,30 +42,61 @@
     </div>
     <div class="row">
         {% if list_type=='wl' %}
-        <p>My watchlists</p>
+        <h3>My watchlists</h3>
         {% elif list_type=='idx' %}
-        <p>Indices</p>
+        <h3>Indices</h3>
         {% elif list_type=='all' %}
-        <p>All symbols</p>
+        <h3>All symbols</h3>
         {% endif %}
+        <p>Active Watchlist: {{ watchlist_id }}
+            --- <a href="#">Manage Watchlist</a></p>
         {% if watchlist_id %}
-        <p>Current Watchlist: {{ list_data['list_name'] }}</p>
-        <table class="table table-hover">
-            <thead class="table-primary">
-            <tr>
-                <th>Symbol</th>
-                <th>Name</th>
-            </tr>
-            </thead>
-            <tbody class="table-group-divider">
-            {% for item in list_data['list'] %}
-            <tr>
-                <td>{{ item.symbol }}</td>
-                <td>{{ item.name }}</td>
-            </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+        <div class="container">
+            <table class="table table-hover">
+                <thead class="table-primary">
+                <tr>
+                    <th>Symbol</th>
+                    <th>Name</th>
+                </tr>
+                </thead>
+                <tbody class="table-group-divider">
+                {% for item in list_data['list'] %}
+                <tr>
+                    <td>{{ item.symbol }}</td>
+                    <td>{{ item.name }}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+        {% if list_type=='all' %}
+        <div class="container">
+            {% include '_pagination.html' %}
+            <table class="table table-hover">
+                <thead class="table-primary">
+                    <tr>
+                        <th>Symbol</th>
+                        <th>Name</th>
+                        <th> Exchange </th>
+                        <th> Sector | Industry </th>
+                        <th> Add to List </th>
+                    </tr>
+                </thead>
+                <tbody class="table-group-divider">
+                    {% for symbol, data in symbol_data|items %}
+                    <tr>
+                        <td>{{ symbol }}</td>
+                        <td>{{ data.name }}</td>
+                        <td>{{ data.exchange }}</td>
+                        <td>{{ data.sector }} | {{ data.industry }}</td>
+                        <td>Add to list</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% include '_pagination.html' %}
+        </div>
         {% endif %}
     </div>
 </div>

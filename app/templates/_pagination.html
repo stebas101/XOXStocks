@@ -1,0 +1,15 @@
+<ul class="pagination justify-content-center">
+    <li class="page-item {% if prev_url %}{% else %}disabled{% endif %}">               
+        <a class="page-link" href="{{ prev_url }}&list=all" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+        </a>
+    </li>
+    {% for p in range(1, pages+1)  %}
+    <li class="page-item"><a class="page-link {% if p==page %}active{% endif %}" href="{{ url_for("/.watchlist") }}?list=all&page={{p}}">{{p}}</a></li>
+    {% endfor %}
+    <li class="page-item">
+        <a class="page-link {% if next_url %}{% else %}disabled{% endif %}" href="{{ next_url }}&list=all" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+        </a>
+    </li>
+</ul>
