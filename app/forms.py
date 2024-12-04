@@ -38,8 +38,12 @@ class RegisterForm(FlaskForm):
         if user is not None:
             raise ValidationError('Username already in use.')
     
-    def validate_email(self, email):
-        pass
+    def validate_email(self, email: object) -> None:
+        email = db.session.scalar(
+            sa.select(User).where(
+                User.email == email.data))
+        if email is not None:
+            raise ValidationError('Email already in use.')
 
 
 class ResetPasswordRequestForm(FlaskForm):
@@ -48,3 +52,11 @@ class ResetPasswordRequestForm(FlaskForm):
 
 class ResetPasswordForm(FlaskForm):
     pass
+
+class AddListForm(FlaskForm):
+    list_name = StringField('Watchlist Name', validators=[DataRequired(),
+                                                          Length(min=4, message="List Name must be at least 4 characters long")])
+    submit = SubmitField('Add Watchlist')
+    
+    def validate_list_name(self, list_name: str, user_id: str) -> None:
+        pass

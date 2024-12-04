@@ -75,9 +75,50 @@ class Watchlist(db.Model):
     symbol_list: so.Mapped[str] = so.mapped_column(sa.Text())
     user_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey(User.id),
                                                index=True)
+    
+    def __init__(self, user: int, list_name: str):
+        self.user_id = user
+        self.list_name = list_name
+        self.symbol_list = ''
+        db.session.add(self)
+        db.session.commit()
 
     def __repr__(self):
         return f'<Watchlist {self.list_name}: user {self.user_id}>'
+    
+    def add_symbol(self, symbol: str) -> bool:
+        current_list = self.symbol_list.split(',')
+        if symbol not in current_list:
+            add = ',' + symbol.upper() if self.symbol_list != '' else symbol.upper()
+            self.symbol_list += add
+            db.session.commit()
+            return True
+        return False
+    
+    def remove_symbol(self, symbol: str) -> bool:
+        symbol_list = self.symbol_list.split(',')
+        if symbol in symbol_list:
+            del symbol_list[symbol_list.index(symbol)]
+            self.symbol_list = ','.join(symbol_list)
+            db.session.commit()
+            return True
+        return False
+    
+    def get_watchlist(self) -> list[str]:
+        return self.symbol_list.split(',')
+    
+    def rename_watchlist(self, new_name: str) -> None:
+        self.list_name = new_name
+        db.commit()
+    
+    # @staticmethod
+    # def add_watchlist(user: int, list_name: str):
+    #     watchlist = Watchlist(user_id = user,
+    #                         list_name = list_name,
+    #                         symbol_list = '')
+    #     db.session.add(watchlist)
+    #     db.session.commit()
+    #     return watchlist
 
 
 # class DefaultList(db.Model):

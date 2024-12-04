@@ -1,9 +1,12 @@
 import pytest
 import os
 
+import sqlalchemy as sa
+
 from app import create_app, db
-from app.models import User, Watchlist, Symbol
+from app.models import User, Watchlist
 from config import Config
+# from app.routes import add_watchlist
 from findata import get_stock_info
 
 
@@ -27,6 +30,16 @@ def flask_context():
     db.session.remove()
     db.drop_all()
     app_context.pop()
+    
+
+def mock_list():
+    LIST='AAPL,NVDA,TSLA'
+    LIST_NAME = 'My List'
+    symbol_list = LIST.split(',')
+    watchlist = Watchlist(user=1, list_name=LIST_NAME)
+    for symbol in symbol_list:
+        watchlist.add_symbol(symbol)
+    return watchlist
 
 
 def test_password_hashing():
@@ -41,10 +54,23 @@ def test_user(flask_context):
     db.session.add_all([u1, u2])
     db.session.commit()
 
-def test_watchlists(flask_context):
-    list1 = Watchlist(list_name='My List', symbol_list='AAPL,NVDA,TSLA', user_id='5')
-    db.session.add(list1)
-    db.session.commit()
+def test_add_symbols_to_wl(flask_context):
+    watchlist = mock_list()
+    assert watchlist.get_watchlist()
+
+
+def test_add_existing_symbol_to_wl(flask_context):
+    watchlist = mock_list()
+    symbol = watchlist.get_watchlist()[0]
+    assert watchlist.add_symbol(symbol) == False
+
+
+def test_remove_symbol_from_wl(flask_context):
+    watchlist = mock_list()
+    to_remove = watchlist.get_watchlist()[-1]
+    watchlist.remove_symbol(to_remove)
+    assert to_remove not in watchlist.get_watchlist()
+
 
 def test_load_symbols(flask_context):
     pass

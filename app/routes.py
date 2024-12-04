@@ -1,11 +1,12 @@
 from datetime import datetime, timezone
 
-from flask import Blueprint, render_template, request, g, current_app, url_for
+from flask import Blueprint, render_template, request, g, current_app, url_for, flash, redirect
 from flask_login import current_user, login_required
 import sqlalchemy as sa
 
 from app import db
 from app.models import Symbol, Watchlist
+from app.forms import AddListForm
 from findata import get_stock_info
 
 
@@ -23,6 +24,7 @@ def watchlist():
     list_type = request.args.get('list')
     watchlist_id = request.args.get('wl_id', type=int)
     page = request.args.get('page', 1, type=int)
+    form = AddListForm()
     # TODO push watchlist_id to g
     # TODO if watchlist_id = None, select a watchlist by default
     
@@ -36,11 +38,13 @@ def watchlist():
         
         return render_template('watchlist.html',
                                list_type=list_type,
-                               watchlist_ids=watchlist_ids
+                               watchlist_ids=watchlist_ids,
+                               form=form,
                                )
         
     if list_type == 'wl' and watchlist_id:
         # TODO push watchlist_id to g
+        # TODO check for empty watchlist
         list_data = {}
        
         watchlist = db.session.scalar(
@@ -63,6 +67,7 @@ def watchlist():
                                watchlist_id=watchlist_id,
                                watchlist_ids=watchlist_ids,
                                list_data=list_data,
+                               form=form,
                                )
         
     if list_type =='all':
@@ -94,14 +99,36 @@ def watchlist():
         
     return render_template('watchlist.html',
                            list_type=list_type,
+                           form=form,
                            )
+    
+@bp.route('/add_watchlist', methods=('GET', 'POST'))
+@login_required
+def add_watchlist():
+    list_name = request.args.get('list_name')
+    flash(f"Watchlist {list_name} added.")
+    print('done')
+    return redirect(url_for("/.watchlist")+"?list=wl") 
+    
+
+# def add_watchlist(user: int, list_name: str) -> Watchlist:
+#     watchlist = Watchlist(user_id = user,
+#                           list_name = list_name,
+#                           symbol_list = '')
+#     db.session.add(watchlist)
+#     db.session.commit()
+#     return watchlist
+    
+
+def del_watchlist(list_id: int) -> None:
+    pass
 
 
 @bp.route('/stock_info/<symbol>')
 @login_required
-def stock_info(symbol):
+def stock_info(symbol: str):
     """
-    Retrieves some stock info from YFinance
+    Retrieves some stock info from YFinance and returns it as JSON
     """
     return get_stock_info(symbol)
 
