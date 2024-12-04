@@ -111,15 +111,6 @@ class Watchlist(db.Model):
         self.list_name = new_name
         db.commit()
     
-    # @staticmethod
-    # def add_watchlist(user: int, list_name: str):
-    #     watchlist = Watchlist(user_id = user,
-    #                         list_name = list_name,
-    #                         symbol_list = '')
-    #     db.session.add(watchlist)
-    #     db.session.commit()
-    #     return watchlist
-
 
 # class DefaultList(db.Model):
 #     id = db.Column(db.Integer, primary_key=True)

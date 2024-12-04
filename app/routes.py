@@ -105,20 +105,15 @@ def watchlist():
 @bp.route('/add_watchlist', methods=('GET', 'POST'))
 @login_required
 def add_watchlist():
-    list_name = request.args.get('list_name')
-    flash(f"Watchlist {list_name} added.")
-    print('done')
+    form = AddListForm()
+    list_name = form.data['list_name']
+    if form.validate_on_submit():
+        Watchlist(current_user.id, list_name)
+        flash(f"Watchlist {list_name} added.")
+    else:
+        flash(f"Watchlist {list_name} could not be added.")
     return redirect(url_for("/.watchlist")+"?list=wl") 
-    
-
-# def add_watchlist(user: int, list_name: str) -> Watchlist:
-#     watchlist = Watchlist(user_id = user,
-#                           list_name = list_name,
-#                           symbol_list = '')
-#     db.session.add(watchlist)
-#     db.session.commit()
-#     return watchlist
-    
+ 
 
 def del_watchlist(list_id: int) -> None:
     pass

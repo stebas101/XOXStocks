@@ -1,10 +1,11 @@
+from flask_login import current_user
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField
 from wtforms.validators import DataRequired, Length, EqualTo, Email, ValidationError
 import sqlalchemy as sa
 
 from app import db
-from app.models import User
+from app.models import User, Watchlist
 
 
 class LoginForm(FlaskForm):
@@ -58,5 +59,9 @@ class AddListForm(FlaskForm):
                                                           Length(min=4, message="List Name must be at least 4 characters long")])
     submit = SubmitField('Add Watchlist')
     
-    def validate_list_name(self, list_name: str, user_id: str) -> None:
-        pass
+    def validate_list_name(self, list_name: object) -> None:
+        watchlist = db.session.scalar(
+            sa.select(Watchlist).where(
+                Watchlist.list_name == list_name.data).where(Watchlist.user_id == current_user.id))
+        if watchlist is not None:
+            raise ValidationError('List name already in use.')

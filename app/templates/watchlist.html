@@ -107,6 +107,7 @@
 
 {% from "_formhelpers.html" import render_field %}
 
+{% if list_type=='wl' %}
 <!-- Modal -->
 <div class="modal fade" id="addListModal" tabindex="-1" aria-labelledby="addList" aria-hidden="true">
     <div class="modal-dialog">
@@ -116,19 +117,23 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          Enter the name for a new watchlist
-            <form action="" method="post" novalidate>
-
+          Enter a name for the new watchlist
+            <form action="{{url_for('/.add_watchlist')}}" id="addListForm" method="post" novalidate>
+                {{ form.hidden_tag() }}
                 {{ form.list_name }}
+                {% for error in form.list_name.errors %}
+                    <span class="alert alert-warning">{{ error }}</span>
+                {% endfor %}
             </form>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn btn-primary" action="{{url_for('/.add_watchlist')}}" data-bs-dismiss="modal">Submit</button>
+          <button class="btn btn-primary" form="addListForm">Submit</button>
         </div>
       </div>
     </div>
 </div>
+{% endif %}
 
 <script> 
     let input = document.querySelector('input');
