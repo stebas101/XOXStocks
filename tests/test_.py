@@ -41,6 +41,8 @@ def mock_list():
         watchlist.add_symbol(symbol)
     return watchlist
 
+# TODO:
+# - test for watchlist endpoint flow
 
 def test_password_hashing():
     u = User(username='stefano', email='stefano@exampletesting.info')

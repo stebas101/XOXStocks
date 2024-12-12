@@ -39,6 +39,8 @@ def create_app(config_class=Config):
     from app import routes
     app.register_blueprint(routes.bp)
     app.add_url_rule('/', endpoint='index')
+    # app.add_url_rule('/watchlist', endpoint='watchlist')
+
 
     from app import auth
     app.register_blueprint(auth.bp)

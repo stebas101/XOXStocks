@@ -1,155 +1,72 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-
-<div class="container">
-    <h1 class="text-center">{% block title %}My Watchlists{% endblock %}</h1>
-
-    <input autocomplete="off" autofocus placeholder="Symbol or name" type="text">
-    <button value="click me">click me</button>
-    <p></p>
-    <ul></ul>
-
-    <div class="row mb-3">
-        <div class="col-md-2"></div>
-        <div class="col-md-8">
-            <div class="btn-group">
-                <a href="{{ url_for('/.watchlist')}}?list=wl" class="btn btn-outline-primary {% if list_type=='wl' %}active aria-current="page"{% endif %}">My Watchlists</a>
-                <a href="{{ url_for('/.watchlist')}}?list=idx" class="btn btn-outline-primary {% if list_type=='idx' %}active aria-current="page"{% endif %}">Indices</a>
-                <a href="{{ url_for('/.watchlist')}}?list=all" class="btn btn-outline-primary {% if list_type=='all' %}active aria-current="page"{% endif %}">All Symbols</a>
+    <div class="container">
+        <h1 class="text-center">{% block title %}My Watchlists{% endblock %}</h1>
+        <div class="row mb-3">
+            <div class="col-md-2"></div>
+            <div class="col-md-8">
+                {% include '_watchlist_nav.html' %}
             </div>
-            {% if list_type=='wl' or list_type=='idx' %}
-            <p></p>
-            <div class="dropdown">
-                <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                Select Watchlist
-                </button>
-                <ul class="dropdown-menu">
-                {% if list_type=='wl' %}
-                    {% for watchlist in watchlist_ids %}
-                        <li><a class="dropdown-item  {% if watchlist.id==watchlist_id %}active{% endif %}" href="{{ url_for('/.watchlist')}}?list=wl&wl_id={{ watchlist.id }}">{{ watchlist.list_name }}</a></li>
-                    {% endfor %}
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#addListModal" href="#">Add a new watchlist</a></li>
-                {% elif list_type=='idx' %}
-                <li>indices</li>
-                {% endif %}
-                </ul>
-            </div>
-            {% endif %}
+            <div class="col-md-2"></div>
         </div>
-        <div class="col-md-2"></div>
+        <div class="row">
+            <h3>My watchlists</h3>
+            <p>Active Watchlist: {{ watchlist_id }}
+                --- <a href="#">Manage Watchlist</a></p>
+        </div>
     </div>
-    <p></p>
 
+    {% if list_data %}
+    <div class="container">
+        <table class="table table-hover">
+            <thead class="table-primary">
+            <tr>
+                <th>Symbol</th>
+                <th>Name</th>
+            </tr>
+            </thead>
+            <tbody class="table-group-divider">
+            {% for item in list_data['list'] %}
+            <tr>
+                <td>{{ item.symbol }}</td>
+                <td>{{ item.name }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% elif list_type == 'wl' %}
+        <div class="alert alert-warning" role="alert">The selected watchlist is empty.</div>
+    {% endif %}
 
-
-    <div class="row">
-        {% if list_type=='wl' %}
-        <h3>My watchlists</h3>
-        {% elif list_type=='idx' %}
-        <h3>Indices</h3>
-        {% elif list_type=='all' %}
-        <h3>All symbols</h3>
-        {% endif %}
-        <p>Active Watchlist: {{ watchlist_id }}
-            --- <a href="#">Manage Watchlist</a></p>
-        {% if watchlist_id %}
-        <div class="container">
-            <table class="table table-hover">
-                <thead class="table-primary">
+    {% if list_type == 'all' %}
+    <div class="container">
+        {% include '_pagination.html' %}
+        <table class="table table-hover">
+            <thead class="table-primary">
                 <tr>
                     <th>Symbol</th>
                     <th>Name</th>
+                    <th> Exchange </th>
+                    <th> Sector | Industry </th>
+                    <th> Add to List </th>
                 </tr>
-                </thead>
-                <tbody class="table-group-divider">
-                {% for item in list_data['list'] %}
+            </thead>
+            <tbody class="table-group-divider">
+                {% for symbol, data in symbol_data|items %}
                 <tr>
-                    <td>{{ item.symbol }}</td>
-                    <td>{{ item.name }}</td>
+                    <td>{{ symbol }}</td>
+                    <td>{{ data.name }}</td>
+                    <td>{{ data.exchange }}</td>
+                    <td>{{ data.sector }} | {{ data.industry }}</td>
+                    <td>Add to list</td>
                 </tr>
                 {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        {% endif %}
-        {% if list_type=='all' %}
-        <div class="container">
-            {% include '_pagination.html' %}
-            <table class="table table-hover">
-                <thead class="table-primary">
-                    <tr>
-                        <th>Symbol</th>
-                        <th>Name</th>
-                        <th> Exchange </th>
-                        <th> Sector | Industry </th>
-                        <th> Add to List </th>
-                    </tr>
-                </thead>
-                <tbody class="table-group-divider">
-                    {% for symbol, data in symbol_data|items %}
-                    <tr>
-                        <td>{{ symbol }}</td>
-                        <td>{{ data.name }}</td>
-                        <td>{{ data.exchange }}</td>
-                        <td>{{ data.sector }} | {{ data.industry }}</td>
-                        <td>Add to list</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            {% include '_pagination.html' %}
-        </div>
-        {% endif %}
+            </tbody>
+        </table>
+        {% include '_pagination.html' %}
     </div>
-</div>
-
-{% from "_formhelpers.html" import render_field %}
-
-{% if list_type=='wl' %}
-<!-- Modal -->
-<div class="modal fade" id="addListModal" tabindex="-1" aria-labelledby="addList" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="addList">Add Watchlist</h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          Enter a name for the new watchlist
-            <form action="{{url_for('/.add_watchlist')}}" id="addListForm" method="post" novalidate>
-                {{ form.hidden_tag() }}
-                {{ form.list_name }}
-                {% for error in form.list_name.errors %}
-                    <span class="alert alert-warning">{{ error }}</span>
-                {% endfor %}
-            </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button class="btn btn-primary" form="addListForm">Submit</button>
-        </div>
-      </div>
-    </div>
-</div>
-{% endif %}
-
-<script> 
-    let input = document.querySelector('input');
-    let element = document.querySelector('ul');
-    let destination = document.querySelector('p');
-
-    input.addEventListener('input',
-        () => destination.innerHTML = input.value
-        );
-    document.querySelector('button').addEventListener('click',
-        () => {
-            let text = element.innerHTML;
-            text = text + '<li>' + input.value.replace('<', '&lt;').replace('&', '&amp;') + '</li>';
-            element.innerHTML = text;
-        })
-</script>
-
+    {% endif %}
 
 {% endblock %}

@@ -1,0 +1,50 @@
+<ul class="nav nav-pills">
+    <li class="nav-item">
+        <a class="nav-link {% if list_type=='wl' %}active aria-current="page"{% endif %}" href="{{ url_for('/.watchlist')}}">My Watchlists</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {% if list_type=='idx' %}active aria-current="page"{% endif %}" aria-current="page" href="{{ url_for('/.watchlist')}}/indices">Indices</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {% if list_type=='all' %}active aria-current="page"{% endif %}" aria-current="page" href="{{ url_for('/.watchlist')}}/all">All Symbols</a>
+    </li>
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#">Select Watchlist</a>
+        <ul class="dropdown-menu">
+            {% for watchlist in watchlist_ids %}
+            <li><a class="dropdown-item  {% if watchlist.id==watchlist_id %}active{% endif %}" href="{{ url_for('/.watchlist') }}/wl?wl_id={{ watchlist.id }}">
+                {{ watchlist.list_name }}</a></li>
+            {% endfor %}
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#addListModal" href="#">
+                Add a new watchlist</a></li>
+        </ul>
+    </li>
+</ul>
+
+
+<!-- Modal -->
+    <div class="modal fade" id="addListModal" tabindex="-1" aria-labelledby="addList" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h1 class="modal-title fs-5" id="addList">Add Watchlist</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            Enter a name for the new watchlist
+                <form action="{{url_for('/.add_watchlist')}}" id="addListForm" method="post" novalidate>
+                    {{ form.hidden_tag() }}
+                    {{ form.list_name }}
+                    {% for error in form.list_name.errors %}
+                        <span class="alert alert-warning">{{ error }}</span>
+                    {% endfor %}
+                </form>
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button class="btn btn-primary" form="addListForm">Submit</button>
+            </div>
+        </div>
+        </div>
+    </div>
