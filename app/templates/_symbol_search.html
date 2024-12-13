@@ -1,0 +1,22 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+
+<script> 
+    let input = document.querySelector('input');
+    let element = document.querySelector('ul');
+    let destination = document.querySelector('p');
+
+    input.addEventListener('input',
+        () => destination.innerHTML = input.value
+        );
+    document.querySelector('button').addEventListener('click',
+        () => {
+            let text = element.innerHTML;
+            text = text + '<li>' + input.value.replace('<', '&lt;').replace('&', '&amp;') + '</li>';
+            element.innerHTML = text;
+        })
+</script>
+
+
+{% endblock %}

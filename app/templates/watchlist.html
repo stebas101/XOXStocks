@@ -10,11 +10,17 @@
             </div>
             <div class="col-md-2"></div>
         </div>
-        <div class="row">
-            <h3>My watchlists</h3>
-            <p>Active Watchlist: {{ watchlist_id }}
-                --- <a href="#">Manage Watchlist</a></p>
+        
+        <div class="row mb-3">
+            {% if watchlist_ids %}
+            {% set watchlist = watchlist_ids | selectattr('id', 'equalto', watchlist_id) | first %}
+            <h3>Active Watchlist: {{ watchlist.list_name }}</h3>
+            <a data-bs-toggle="modal" data-bs-target="#renameListModal" href="#">Rename Watchlist</a>
+            <a href="#">Delete Watchlist</a>
+            {% endif %}
+            <a data-bs-toggle="modal" data-bs-target="#addListModal" href="#">Add a New Watchlist</a>
         </div>
+        
     </div>
 
     {% if list_data %}
@@ -24,6 +30,7 @@
             <tr>
                 <th>Symbol</th>
                 <th>Name</th>
+                <th>Remove</th>
             </tr>
             </thead>
             <tbody class="table-group-divider">
@@ -31,6 +38,11 @@
             <tr>
                 <td>{{ item.symbol }}</td>
                 <td>{{ item.name }}</td>
+                <td>
+                    <form action="{{ url_for("/.remove_from_watchlist")}}" method="post" novalidate>
+                        <button class="btn btn-outline-danger btn-sm" type="submit" name="symbol" value="{{item.symbol}}">Remove</button>
+                    </form>
+                </td>
             </tr>
             {% endfor %}
             </tbody>
@@ -50,7 +62,7 @@
                     <th>Name</th>
                     <th> Exchange </th>
                     <th> Sector | Industry </th>
-                    <th> Add to List </th>
+                    <th> Add to Watchlist </th>
                 </tr>
             </thead>
             <tbody class="table-group-divider">
@@ -60,7 +72,13 @@
                     <td>{{ data.name }}</td>
                     <td>{{ data.exchange }}</td>
                     <td>{{ data.sector }} | {{ data.industry }}</td>
-                    <td>Add to list</td>
+                    <td>
+                        {% if symbol not in watchlist_symbols%}
+                        <form action="{{ url_for("/.add_to_watchlist")}}" method="post" novalidate>
+                            <button class="btn btn-outline-success btn-sm" type="submit" name="symbol" value="{{symbol}}">Add</button>
+                        </form>
+                        {% endif %}
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>

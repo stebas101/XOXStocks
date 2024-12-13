@@ -107,9 +107,9 @@ class Watchlist(db.Model):
     def get_watchlist(self) -> list[str]:
         return self.symbol_list.split(',')
     
-    def rename_watchlist(self, new_name: str) -> None:
+    def rename(self, new_name: str) -> None:
         self.list_name = new_name
-        db.commit()
+        db.session.commit()
     
 
 # class DefaultList(db.Model):

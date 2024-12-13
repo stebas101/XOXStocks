@@ -54,6 +54,7 @@ class ResetPasswordRequestForm(FlaskForm):
 class ResetPasswordForm(FlaskForm):
     pass
 
+
 class AddListForm(FlaskForm):
     list_name = StringField('Watchlist Name', validators=[DataRequired(),
                                                           Length(min=4, message="List Name must be at least 4 characters long")])

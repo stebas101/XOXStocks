@@ -48,3 +48,36 @@
         </div>
         </div>
     </div>
+
+
+<!-- set watchlist name  -->
+{% if watchlist_ids %}
+{% set watchlist = watchlist_ids | selectattr('id', 'equalto', watchlist_id) | first %}
+
+<!-- Rename List Modal -->
+    <div class="modal fade" id="renameListModal" tabindex="-1" aria-labelledby="renameList" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h1 class="modal-title fs-5" id="addList">Rename Watchlist</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            Enter a new name for  <em>{{ watchlist.list_name}}</em>
+                <form action="{{url_for('/.rename_watchlist')}}" id="renameListForm" method="post" novalidate>
+                    {{ form.hidden_tag() }}
+                    {{ form.list_name }}
+                    {% for error in form.list_name.errors %}
+                        <span class="alert alert-warning">{{ error }}</span>
+                    {% endfor %}
+                </form>
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button class="btn btn-primary" form="renameListForm">Submit</button>
+            </div>
+        </div>
+        </div>
+    </div>
+
+{% endif %}

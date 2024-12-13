@@ -111,10 +111,18 @@ def all_symbols():
     watchlist_id = session.get('watchlist_id')
     watchlist_ids = get_user_watchlist_data(current_user.id)
     user_watchlists = [wl['id'] for wl in watchlist_ids] # ids of watchlists belonging to user
+    active_watchlist = db.session.scalar(
+        sa.select(Watchlist).where(Watchlist.id == watchlist_id)
+    )
 
     # if the watchlist does not belong to the user or does not exist, redirect to default watchlist page:
     if watchlist_id not in user_watchlists:
         session['watchlist_id'] = get_default_watchlist(current_user.id)
+        
+    active_watchlist = db.session.scalar(
+        sa.select(Watchlist).where(Watchlist.id == watchlist_id)
+    )
+    watchlist_symbols = active_watchlist.symbol_list.split(',')
 
     symbol_data = {}
     query = sa.select(Symbol).order_by(Symbol.name.asc())
@@ -139,6 +147,7 @@ def all_symbols():
                             list_type=list_type,
                             watchlist_id=watchlist_id,
                             watchlist_ids=watchlist_ids,
+                            watchlist_symbols=watchlist_symbols,
                             symbol_data=symbol_data,
                             form=form,
                             pages=pages,
@@ -185,7 +194,7 @@ def select_watchlist(wl: str):
 
     return redirect(request.referrer)
 
-@bp.route('/add_watchlist', methods=('GET', 'POST'))
+@bp.route('/add_watchlist', methods=('POST',))
 @login_required
 def add_watchlist():
     form = AddListForm()
@@ -195,11 +204,56 @@ def add_watchlist():
         flash(f"Watchlist {list_name} added.")
     else:
         flash(f"Watchlist {list_name} could not be added.")
-    return redirect(url_for("/.watchlist")+"?list=wl") 
+    return redirect(url_for("/.watchlist"))
+
+
+@bp.route('/rename_watchlist', methods=('POST',))
+@login_required
+def rename_watchlist():
+    form = AddListForm()
+    watchlist_id = session.get('watchlist_id')
+    watchlist = db.session.scalar(
+        sa.select(Watchlist).where(Watchlist.id == watchlist_id)
+    )
+    new_name = form.data['list_name']
+    old_name = watchlist.list_name
+    if form.validate_on_submit():
+        watchlist.rename(new_name=new_name)
+        flash(f"Watchlist {old_name} renamed as {new_name}.")
+    else:
+        flash(f"Watchlist {old_name} could not be renamed.")
+    return redirect(url_for("/.watchlist")) 
 
 
 def del_watchlist(list_id: int) -> None:
     pass
+
+@bp.route('/add_to_watchlist', methods=['POST'])
+@login_required
+def add_to_watchlist():
+    watchlist_id = session.get('watchlist_id')
+    watchlist = db.session.scalar(sa.select(Watchlist).where(Watchlist.id == watchlist_id))
+    symbol = request.form.get('symbol')
+    added = watchlist.add_symbol(symbol)
+    if added:
+        flash(f"{symbol} was added to the active watchlist.")
+    else:
+        flash(f"{symbol} was already in the watchlist.")
+    return redirect(request.referrer)
+
+@bp.route('/remove_from_watchlist', methods=['POST'])
+@login_required
+def remove_from_watchlist():
+    watchlist_id = session.get('watchlist_id')
+    watchlist = db.session.scalar(sa.select(Watchlist).where(Watchlist.id == watchlist_id))
+    symbol = request.form.get('symbol')
+    print(watchlist_id, symbol)
+    removed = watchlist.remove_symbol(symbol)
+    if removed:
+        flash(f"{symbol} was removed from the active watchlist.")
+    else:
+        flash(f"{symbol} could not be removed.")
+    return redirect(request.referrer)
 
 
 @bp.route('/stock_info/<symbol>')
