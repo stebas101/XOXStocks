@@ -6,7 +6,7 @@ import sqlalchemy as sa
 from app import create_app, db
 from app.models import User, Watchlist
 from config import Config
-# from app.routes import add_watchlist
+from app.routes import add_watchlist, get_user_watchlist_data
 from findata import get_stock_info
 
 
@@ -31,7 +31,6 @@ def flask_context():
     db.drop_all()
     app_context.pop()
     
-
 def mock_list():
     LIST='AAPL,NVDA,TSLA'
     LIST_NAME = 'My List'
@@ -60,19 +59,16 @@ def test_add_symbols_to_wl(flask_context):
     watchlist = mock_list()
     assert watchlist.get_watchlist()
 
-
 def test_add_existing_symbol_to_wl(flask_context):
     watchlist = mock_list()
     symbol = watchlist.get_watchlist()[0]
     assert watchlist.add_symbol(symbol) == False
-
 
 def test_remove_symbol_from_wl(flask_context):
     watchlist = mock_list()
     to_remove = watchlist.get_watchlist()[-1]
     watchlist.remove_symbol(to_remove)
     assert to_remove not in watchlist.get_watchlist()
-
 
 def test_load_symbols(flask_context):
     pass
@@ -82,4 +78,10 @@ def test_update_symbols(flask_context):
 
 def test_get_stock_info():
     get_stock_info('MSFT')
+
+def test_get_user_watchlist_data(flask_context):
+    mock_list()
+    watchlist_ids = get_user_watchlist_data(1)
+    assert watchlist_ids == [{'id':1, 'list_name':"My List"}]
+        
 

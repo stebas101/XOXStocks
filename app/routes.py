@@ -27,51 +27,47 @@ def watchlist():
     to /watchlist/wl. Otherwise, it renders a page without watchlist table and flashes a message
     asking to create a new watchlist.
     """
+    list_type = 'wl' # used to determine the active navigation link
     form = AddListForm() # the form is used in 'Select Watchlist'
-    list_type = 'wl'
     watchlist_id = session.get('watchlist_id')
+    watchlist_ids = get_user_watchlist_data(current_user.id)
+    user_watchlists = [wl['id'] for wl in watchlist_ids] # ids of watchlists belonging to user
     
     # check if current watchlist_id is valid for the current user
-    query = sa.select(Watchlist).where(Watchlist.user_id == current_user.id)
-    user_watchlists = db.session.scalars(query).all()
-    if watchlist_id in [wl.id for wl in user_watchlists]: # watchlist_id is valid
-        print(url_for("/.watchlist"))
+    if watchlist_id and watchlist_id in user_watchlists: # watchlist_id is valid
         return redirect(url_for('/.watchlist') + "/wl")
     else:
         watchlist_id = get_default_watchlist(current_user.id)
+        session['watchlist_id'] = watchlist_id
         if watchlist_id: # if there's a watchlist to use
-            session.watchlist_id = watchlist_id
+            session['watchlist_id'] = watchlist_id
             return redirect(url_for('/.watchlist') + "/wl")
 
     flash("You have no watchlist to use. Create a new one.")
     return render_template('watchlist.html',
                            list_type=list_type,
                            form=form,
+                           watchlist_id=watchlist_id,
+                           watchlist_ids=watchlist_ids,
                            )
 
 
 @bp.route('/watchlist/wl')
 @login_required
 def watchlist_id():
-    # TODO: check there's a valid watchlist, or render an error
     list_type = 'wl'
-    form = AddListForm()
-    # use requested watchlist or watchlist in session if that exists
-    watchlist_id = session.get('watchlist_id')
-    watchlist_id = request.args.get('wl_id', watchlist_id, type=int)
-    # if the watchlist does not belong to the user or does not exist, redirect to default watchlist page:
-    if watchlist_id not in get_user_watchlists(current_user.id):
-        return redirect('/watchlist')
-    # set session watchlist to the requested one:
-    session.watchlist_id = watchlist_id
     page = request.args.get('page', 1, type=int)
-    # preparing watchlist data to display as available options
-    watchlists = db.session.scalars(
-        sa.select(Watchlist).where(Watchlist.user_id == current_user.id)
-    )
-    watchlist_ids = [ {'id':watchlist.id, 'list_name':watchlist.list_name} for watchlist in list(watchlists) ]
-    
-    # preparing data to display as watchlist
+    form = AddListForm() # the form is used in 'Select Watchlist'
+    watchlist_id = session.get('watchlist_id')
+    watchlist_ids = get_user_watchlist_data(current_user.id)
+    user_watchlists = [wl['id'] for wl in watchlist_ids] # ids of watchlists belonging to user
+
+    # if the watchlist does not belong to the user or does not exist, redirect to default watchlist page:
+    if watchlist_id not in user_watchlists:
+        session['watchlist_id'] = get_default_watchlist(current_user.id)
+        return redirect('/watchlist')
+
+    # preparing stock data to display for a watchlist
     list_data = {}
     watchlist = db.session.scalar(
         sa.select(Watchlist).where(Watchlist.id == watchlist_id)
@@ -110,11 +106,16 @@ def indices():
 @login_required
 def all_symbols():
     list_type = 'all'
-    form = AddListForm() # the form is used in 'Select Watchlist'
     page = request.args.get('page', 1, type=int)
-    # TODO check watchlist belongs to the user
+    form = AddListForm() # the form is used in 'Select Watchlist'
     watchlist_id = session.get('watchlist_id')
-    # TODO get watchlist ids for the menu
+    watchlist_ids = get_user_watchlist_data(current_user.id)
+    user_watchlists = [wl['id'] for wl in watchlist_ids] # ids of watchlists belonging to user
+
+    # if the watchlist does not belong to the user or does not exist, redirect to default watchlist page:
+    if watchlist_id not in user_watchlists:
+        session['watchlist_id'] = get_default_watchlist(current_user.id)
+
     symbol_data = {}
     query = sa.select(Symbol).order_by(Symbol.name.asc())
     symbols = db.paginate(query,
@@ -123,7 +124,10 @@ def all_symbols():
                         error_out=False
                         )
     pages = symbols.pages
+    
+    #
     # TODO fix url_for
+    #
     next_url = url_for('/.watchlist', page=symbols.next_num) if symbols.has_next else None
     prev_url = url_for('/.watchlist', page=symbols.prev_num) if symbols.has_prev else None
     
@@ -134,9 +138,9 @@ def all_symbols():
     return render_template('watchlist.html',
                             list_type=list_type,
                             watchlist_id=watchlist_id,
+                            watchlist_ids=watchlist_ids,
                             symbol_data=symbol_data,
                             form=form,
-                        #    symbols=symbols.items,
                             pages=pages,
                             page=page,
                             next_url=next_url,
@@ -154,19 +158,32 @@ def get_default_watchlist(user_id: int) -> int:
     watchlist = db.session.scalars(query).first()
     return watchlist.id if watchlist else 0
 
-def get_user_watchlists(user_id: int) -> list[int]:
-    """This returns a list of the watchlist ids belonging to a user.
+def get_user_watchlist_data(user_id: int) -> list[dict]:
+    """This function returns a list that includes data (id and list_name) for each watchlist belonging
+    to a user.
 
     Args:
         user_id (int): user id
 
     Returns:
-        list[int]: list of watchlist ids
+        list[dict]: list of dicts containing data fot the watchlists.
     """
-    query = sa.select(Watchlist).where(Watchlist.user_id == current_user.id)
-    user_watchlists = db.session.scalars(query).all()
-    return [wl.id for wl in user_watchlists]
 
+    # preparing watchlist data to display as available options
+    watchlists = db.session.scalars(
+        sa.select(Watchlist).where(Watchlist.user_id == user_id)
+    )
+    watchlist_ids = [ {'id':watchlist.id, 'list_name':watchlist.list_name} for watchlist in list(watchlists) ]
+    return watchlist_ids
+
+
+@bp.route('/select_watchlist/<wl>')
+@login_required
+def select_watchlist(wl: str):
+    session['watchlist_id'] = int(wl)
+    print(f"{session.get('watchlist_id') = }")
+
+    return redirect(request.referrer)
 
 @bp.route('/add_watchlist', methods=('GET', 'POST'))
 @login_required
@@ -179,7 +196,7 @@ def add_watchlist():
     else:
         flash(f"Watchlist {list_name} could not be added.")
     return redirect(url_for("/.watchlist")+"?list=wl") 
- 
+
 
 def del_watchlist(list_id: int) -> None:
     pass

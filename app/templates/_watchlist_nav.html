@@ -12,7 +12,7 @@
         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#">Select Watchlist</a>
         <ul class="dropdown-menu">
             {% for watchlist in watchlist_ids %}
-            <li><a class="dropdown-item  {% if watchlist.id==watchlist_id %}active{% endif %}" href="{{ url_for('/.watchlist') }}/wl?wl_id={{ watchlist.id }}">
+            <li><a class="dropdown-item  {% if watchlist.id==watchlist_id %}active{% endif %}" href="{{ url_for('/.select_watchlist', wl=watchlist.id) }}">
                 {{ watchlist.list_name }}</a></li>
             {% endfor %}
             <li><hr class="dropdown-divider"></li>
@@ -23,7 +23,7 @@
 </ul>
 
 
-<!-- Modal -->
+<!-- Add New List Modal -->
     <div class="modal fade" id="addListModal" tabindex="-1" aria-labelledby="addList" aria-hidden="true">
         <div class="modal-dialog">
         <div class="modal-content">
