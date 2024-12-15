@@ -224,9 +224,19 @@ def rename_watchlist():
         flash(f"Watchlist {old_name} could not be renamed.")
     return redirect(url_for("/.watchlist")) 
 
-
-def del_watchlist(list_id: int) -> None:
-    pass
+@bp.route('/delete_watchlist', methods=('POST',))
+@login_required
+def delete_watchlist() -> None:
+    watchlist_id = session.get('watchlist_id')
+    watchlist = db.session.scalar(sa.select(Watchlist).where(Watchlist.id == watchlist_id))
+    name = watchlist.list_name
+    try:
+        db.session.delete(watchlist)
+        db.session.commit()
+        flash(f"Watchlist {name} deleted.")
+    except:
+        flash(f"Watchlist {name} could not be deleted.")
+    return redirect(request.referrer)
 
 @bp.route('/add_to_watchlist', methods=['POST'])
 @login_required

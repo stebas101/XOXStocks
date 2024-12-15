@@ -16,7 +16,7 @@
             {% set watchlist = watchlist_ids | selectattr('id', 'equalto', watchlist_id) | first %}
             <h3>Active Watchlist: {{ watchlist.list_name }}</h3>
             <a data-bs-toggle="modal" data-bs-target="#renameListModal" href="#">Rename Watchlist</a>
-            <a href="#">Delete Watchlist</a>
+            <a data-bs-toggle="modal" data-bs-target="#deleteListModal" href="#">Delete Watchlist</a>
             {% endif %}
             <a data-bs-toggle="modal" data-bs-target="#addListModal" href="#">Add a New Watchlist</a>
         </div>

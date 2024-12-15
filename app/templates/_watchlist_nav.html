@@ -63,7 +63,7 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-            Enter a new name for  <em>{{ watchlist.list_name}}</em>
+            Enter a new name for  <strong>{{ watchlist.list_name}}</strong>
                 <form action="{{url_for('/.rename_watchlist')}}" id="renameListForm" method="post" novalidate>
                     {{ form.hidden_tag() }}
                     {{ form.list_name }}
@@ -79,5 +79,33 @@
         </div>
         </div>
     </div>
+
+
+<!-- Delete List Modal -->
+<div class="modal fade" id="deleteListModal" tabindex="-1" aria-labelledby="deleteList" aria-hidden="true">
+    <div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+        <h1 class="modal-title fs-5" id="addList">Delete Watchlist</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <div class="alert alert-warning">Are you sure you want to delete <strong>{{ watchlist.list_name}}?
+            </strong></div>
+            This can't be undone.
+            <form action="{{url_for('/.delete_watchlist')}}" id="deleteListForm" method="post" novalidate>
+                {{ form.hidden_tag() }}
+                {% for error in form.list_name.errors %}
+                    <span class="alert alert-warning">{{ error }}</span>
+                {% endfor %}
+            </form>
+        </div>
+        <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn btn-danger" form="deleteListForm">Confirm</button>
+        </div>
+    </div>
+    </div>
+</div>
 
 {% endif %}

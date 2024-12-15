@@ -65,4 +65,4 @@ class AddListForm(FlaskForm):
             sa.select(Watchlist).where(
                 Watchlist.list_name == list_name.data).where(Watchlist.user_id == current_user.id))
         if watchlist is not None:
-            raise ValidationError('List name already in use.')
+            raise ValidationError('List name already in use.')    
