@@ -6,7 +6,7 @@
         <div class="row mb-3">
             <div class="col-md-2"></div>
             <div class="col-md-8">
-                {% include '_watchlist_nav.html' %}
+                {% include 'watchlist/_watchlist_nav.html' %}
             </div>
             <div class="col-md-2"></div>
         </div>
@@ -39,7 +39,7 @@
                 <td>{{ item.symbol }}</td>
                 <td>{{ item.name }}</td>
                 <td>
-                    <form action="{{ url_for("/.remove_from_watchlist")}}" method="post" novalidate>
+                    <form action="{{ url_for("watchlist.remove_from_watchlist")}}" method="post" novalidate>
                         <button class="btn btn-outline-danger btn-sm" type="submit" name="symbol" value="{{item.symbol}}">Remove</button>
                     </form>
                 </td>
@@ -74,7 +74,7 @@
                     <td>{{ data.sector }} | {{ data.industry }}</td>
                     <td>
                         {% if symbol not in watchlist_symbols%}
-                        <form action="{{ url_for("/.add_to_watchlist")}}" method="post" novalidate>
+                        <form action="{{ url_for("watchlist.add_to_watchlist")}}" method="post" novalidate>
                             <button class="btn btn-outline-success btn-sm" type="submit" name="symbol" value="{{symbol}}">Add</button>
                         </form>
                         {% endif %}

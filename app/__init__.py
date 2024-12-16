@@ -43,6 +43,9 @@ def create_app(config_class=Config):
     from app import auth
     app.register_blueprint(auth.bp)
     
+    from app import watchlist
+    app.register_blueprint(watchlist.bp)
+    
     from app import cli
     app.register_blueprint(cli.bp)
     

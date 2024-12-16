@@ -6,7 +6,7 @@ import sqlalchemy as sa
 from app import create_app, db
 from app.models import User, Watchlist
 from config import Config
-from app.routes import add_watchlist, get_user_watchlist_data
+from app.watchlist import add_watchlist, get_user_watchlist_data
 from findata import get_stock_info
 
 
