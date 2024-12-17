@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, request, current_app
+from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
@@ -46,24 +46,11 @@ def create_app(config_class=Config):
     from app import watchlist
     app.register_blueprint(watchlist.bp)
     
+    from app import screener
+    app.register_blueprint(screener.bp)
+    
     from app import cli
     app.register_blueprint(cli.bp)
-    
-    # from app import api
-    # app.register_blueprint(api.bp)
-    
-    # @app.cli.command("init-db")
-    # def init_db_command():
-    #     """Clear the existing data and create new tables."""
-    #     db.drop_all()
-    #     db.create_all()
-    #     click.echo('Initialized the database.')
-        
-    # @app.cli.command("fill-data")
-    # def fill_data_command():
-    #     from app.fill_data import fill_data
-    #     fill_data()
-    #     click.echo('Data filled into database.')
     
     # TODO use this for email, logging and all activities not in dubugging or testing
     # if not app.debug and not app.testing:
