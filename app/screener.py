@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, session
+from flask import Blueprint, render_template, session, flash
 from flask_login import login_required
 
 
@@ -8,4 +8,6 @@ bp = Blueprint('screener', __name__, url_prefix='/screener')
 @login_required
 def screener():
     watchlist_id = session.get('watchlist_id')
+    if watchlist_id == 0:
+        flash("You need to select an non-empty watchlist.")
     return render_template('screener/screener.html')
